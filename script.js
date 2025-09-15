@@ -1,6 +1,17 @@
 let posts;
+let GiphyAPIKey = "";
 
 document.addEventListener("DOMContentLoaded", function() {
+    
+    if (!localStorage.hasOwnProperty("GiphyAPIKey")) {
+        GiphyAPIKey = prompt("Insira sua chave de API Giphy.");
+        localStorage.setItem("GiphyAPIKey", GiphyAPIKey);
+        location.reload();
+        return;
+    } else {
+        GiphyAPIKey = localStorage.getItem("GiphyAPIKey");
+    }
+
     posts = JSON.parse(localStorage.getItem("postsExemplo"));
     posts.forEach(post => addIntoTimeline(post));
 });
