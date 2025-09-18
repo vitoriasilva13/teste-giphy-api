@@ -1,9 +1,14 @@
 let posts = [];
-let GiphyAPIKey = "";
+let GIPHY_API_KEY = localStorage.getItem("GIPHY_API_KEY") || "";
+
+let myGifModal;
+let flag = true;
 
 document.addEventListener("DOMContentLoaded", function() {
     const myModal = new bootstrap.Modal("#staticBackdrop");
     myModal.show();
+
+    document.getElementById("apiKey").value = GIPHY_API_KEY;
 
     posts = JSON.parse(localStorage.getItem("posts")) || [];
     posts.forEach(post => addIntoTimeline(post));
@@ -46,7 +51,7 @@ let addIntoTimeline = (post) => {
                             ? `<iframe class="mt-2" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/${post.spotify}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`
                             : '';
     let mediaEmbed = post.imagemUrl
-                            ? `<img class="img-fluid rounded object-fit-cover w-100" src="${post.imagemUrl}" alt="" style="max-height: 100vw">`
+                            ? `<img class="img-fluid rounded object-fit-cover w-100" src="${post.imagemUrl}" alt="" style="max-height: 60vw">`
                             : '';
     let titulo = post.titulo
                         ? `<h5 class="mb-0">${post.titulo}</h5>`
@@ -94,4 +99,56 @@ let remove = (id) => {
 
     let postElements = document.querySelectorAll(`[data-id='${id}']`);
     postElements.forEach(el => el.remove());
+}
+
+let saveKey = () => {
+    let key = document.getElementById("apiKey").value;
+    if (key) {
+        localStorage.setItem("GIPHY_API_KEY", key);
+        GIPHY_API_KEY = key;
+    } else {
+        alert("Chave inválida");
+    }
+}
+
+let openGifModal = () => {
+    myGifModal = new bootstrap.Modal("#gifResultModal");
+    myGifModal.show();
+
+    if (!flag) return;
+
+    fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=10`)
+    .then(response => response.json())
+    .then(data => {
+        addGif(data);
+    })
+    .catch(error => console.error('Error fetching trending GIFs:', error));
+    flag = false;
+}
+
+let searchGif = () => {
+    let pesquisa = document.getElementById("pesquisaGif").value;
+    fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(pesquisa)}&limit=10`)
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("gifResult").innerHTML = "";
+        addGif(data);
+    })
+    .catch(error => console.error('Error fetching trending GIFs:', error));
+}
+
+let addGif = giphy => {
+    giphy.data.forEach(gif => {
+    console.log(gif.title, gif.images.original.url);
+    const img = document.createElement('img');
+    img.src = gif.images.original.url;
+    img.classList.add("img-fluid", "rounded", "object-fit-cover");
+    img.style.height = '100px';
+    img.style.width = '100px';
+    img.addEventListener('click', () => {
+        document.getElementById("mediaUrl").value = img.src;
+        myGifModal.hide();
+    })
+    document.getElementById("gifResult").appendChild(img);
+    });
 }

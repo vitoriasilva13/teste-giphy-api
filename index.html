@@ -45,7 +45,7 @@
             </div>
             <div class="input-group my-3">
                 <input type="text" class="form-control" placeholder="Url da mídia" id="mediaUrl" name="mediaUrl">
-                <button class="btn btn-outline-secondary">GIF</button>
+                <button class="btn btn-outline-secondary" onclick="openGifModal()">ADD GIF</button>
             </div>
             <div class="input-group my-3">
                 <input type="text" class="form-control" placeholder="Url Spotify" id="spotifyUrl" name="spotifyUrl">
@@ -70,7 +70,25 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Continuar sem chave</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Salvar</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveKey();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="gifResultModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="gifResultModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                    <p>Selecione um GIF</p>
+                    <div class="input-group my-3">
+                        <input type="text" class="form-control" placeholder="Termo da busca" id="pesquisaGif" name="pesquisaGif">
+                        <button class="btn btn-outline-secondary" onclick="searchGif()">PESQUISAR</button>
+                    </div>
+                    <div class="d-flex flex-wrap" id="gifResult"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </div>
